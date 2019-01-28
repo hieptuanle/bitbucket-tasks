@@ -28,7 +28,7 @@ export const ListPullRequest = inject('listPullRequestsStore')(
                 }
               }}
             >
-              Reload
+              Load Pull Requests
             </button>
             <div>
               <ReactTable

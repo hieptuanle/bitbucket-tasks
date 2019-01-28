@@ -1,9 +1,16 @@
 import Bitbucket from 'bitbucket'
+import store from 'store'
 
 export const bitbucket = new Bitbucket()
 
-bitbucket.authenticate({
-  type: 'basic',
-  username: process.env.REACT_APP_BITBUCKET_USERNAME || '',
-  password: process.env.REACT_APP_BITBUCKET_PASSWORD || ''
-})
+export function reauthenticate() {
+  if (store.get('username') && store.get('password')) {
+    bitbucket.authenticate({
+      type: 'basic',
+      username: store.get('username') || '',
+      password: store.get('password') || ''
+    })
+  }
+}
+
+reauthenticate()

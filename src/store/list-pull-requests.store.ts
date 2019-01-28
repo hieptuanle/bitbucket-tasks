@@ -1,5 +1,5 @@
 import { decorate, observable, action, runInAction, toJS } from 'mobx'
-import { bitbucket } from '../utils/bitbucket'
+import { bitbucket, reauthenticate } from '../utils/bitbucket'
 import Bitbucket from 'bitbucket'
 import bluebird from 'bluebird'
 import { get } from 'lodash'
@@ -92,6 +92,7 @@ type MyPullRequest = {
 export class ListPullRequestsStore {
   pullRequests: MyPullRequest[] = []
   async getPullRequests() {
+    reauthenticate()
     this.pullRequests = []
     try {
       await getPullRequests({

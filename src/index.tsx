@@ -5,10 +5,13 @@ import App from './App'
 import * as serviceWorker from './serviceWorker'
 import { Provider } from 'mobx-react'
 import { ListPullRequestsStore } from './store/list-pull-requests.store'
+import { IntlProvider } from 'react-intl'
 
 ReactDOM.render(
   <Provider listPullRequestsStore={new ListPullRequestsStore()}>
-    <App />
+    <IntlProvider locale="en">
+      <App />
+    </IntlProvider>
   </Provider>,
 
   document.getElementById('root')

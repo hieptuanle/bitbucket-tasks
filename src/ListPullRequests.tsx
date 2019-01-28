@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { observer, inject } from 'mobx-react'
 import { ListPullRequestsStore } from './store/list-pull-requests.store'
 import { handleError } from './utils/error-handler'
+import { format } from 'date-fns'
 
 import ReactTable from 'react-table'
 import 'react-table/react-table.css'
@@ -33,13 +34,24 @@ export const ListPullRequest = inject('listPullRequestsStore')(
                 data={this.props.listPullRequestsStore!.pullRequests}
                 columns={[
                   {
+                    Header: '',
+                    id: 'row',
+                    maxWidth: 50,
+                    filterable: false,
+                    Cell: row => {
+                      return <div>{row.index}</div>
+                    }
+                  },
+                  {
                     Header: 'id',
                     id: 'id',
+                    maxWidth: 50,
                     accessor: d => d.id
                   },
                   {
                     Header: 'User',
                     id: 'user',
+                    maxWidth: 150,
                     accessor: d => d.author!.nickname
                   },
                   {
@@ -50,12 +62,8 @@ export const ListPullRequest = inject('listPullRequestsStore')(
                   {
                     Header: 'Updated',
                     id: 'updated',
-                    accessor: d => d.updated_on
-                  },
-                  {
-                    Header: 'Created',
-                    id: 'date',
-                    accessor: d => d.created_on
+                    maxWidth: 100,
+                    accessor: d => format(d.updated_on || new Date(), 'YYYY-MM-DD')
                   }
                 ]}
                 defaultPageSize={10}

@@ -3,6 +3,7 @@ import { observer, inject } from 'mobx-react'
 import { ListPullRequestsStore } from './store/list-pull-requests.store'
 import { handleError } from './utils/error-handler'
 import { format } from 'date-fns'
+import { get } from 'lodash'
 
 import ReactTable from 'react-table'
 import 'react-table/react-table.css'
@@ -32,6 +33,8 @@ export const ListPullRequest = inject('listPullRequestsStore')(
             <div>
               <ReactTable
                 data={this.props.listPullRequestsStore!.pullRequests}
+                filterable
+                defaultFilterMethod={(filter, row) => String(row[filter.id]).includes(filter.value)}
                 columns={[
                   {
                     Header: '',
@@ -43,14 +46,38 @@ export const ListPullRequest = inject('listPullRequestsStore')(
                     }
                   },
                   {
-                    Header: 'id',
+                    Header: 'Repo',
+                    id: 'repo',
+                    maxWidth: 120,
+                    accessor: d => get(d, 'source.repository.name', '')
+                  },
+                  {
+                    Header: 'PR ID',
                     id: 'id',
                     maxWidth: 50,
                     accessor: d => d.id
                   },
                   {
+                    Header: 'Link',
+                    id: 'link',
+                    maxWidth: 50,
+                    accessor: d => get(d, 'links.html.href', ''),
+                    Cell: row => {
+                      return (
+                        <div>
+                          {row.value !== '' && (
+                            <a target="_blank" href={row.value}>
+                              Link
+                            </a>
+                          )}
+                        </div>
+                      )
+                    }
+                  },
+                  {
                     Header: 'User',
                     id: 'user',
+                    filterable: true,
                     maxWidth: 150,
                     accessor: d => d.author!.nickname
                   },
@@ -64,6 +91,24 @@ export const ListPullRequest = inject('listPullRequestsStore')(
                     id: 'updated',
                     maxWidth: 100,
                     accessor: d => format(d.updated_on || new Date(), 'YYYY-MM-DD')
+                  },
+                  {
+                    Header: 'Eval',
+                    id: 'evaluated',
+                    maxWidth: 50,
+                    accessor: d => (d.evaluated ? 'x' : '')
+                  },
+                  {
+                    Header: 'Độ khó',
+                    id: 'hardnessPoints',
+                    maxWidth: 60,
+                    accessor: d => d.hardnessPoints
+                  },
+                  {
+                    Header: 'Test',
+                    id: 'testPoints',
+                    maxWidth: 60,
+                    accessor: d => d.testPoints
                   }
                 ]}
                 defaultPageSize={10}

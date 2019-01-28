@@ -5,6 +5,7 @@
   "dependencies": {
     "@types/bluebird": "^3.5.25",
     "@types/jest": "23.3.13",
+    "@types/lodash": "^4.14.120",
     "@types/node": "10.12.18",
     "@types/react": "16.7.21",
     "@types/react-dom": "16.0.11",
@@ -14,6 +15,7 @@
     "bitbucket": "^1.8.0",
     "bluebird": "^3.5.3",
     "date-fns": "^1.30.1",
+    "lodash": "^4.17.11",
     "mobx": "^5.9.0",
     "mobx-react": "^5.4.3",
     "react": "^16.7.0",

@@ -6,6 +6,7 @@ import * as serviceWorker from './serviceWorker'
 import { Provider } from 'mobx-react'
 import { ListPullRequestsStore } from './store/list-pull-requests.store'
 import { IntlProvider } from 'react-intl'
+import 'react-toastify/dist/ReactToastify.css'
 
 ReactDOM.render(
   <Provider listPullRequestsStore={new ListPullRequestsStore()}>

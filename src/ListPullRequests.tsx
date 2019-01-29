@@ -4,9 +4,12 @@ import { ListPullRequestsStore } from './store/list-pull-requests.store'
 import { handleError } from './utils/error-handler'
 import { format } from 'date-fns'
 import { get } from 'lodash'
+import { MyPullRequest } from './store/list-pull-requests.store'
+import { omit } from 'lodash'
 
-import ReactTable from 'react-table'
+import ReactTable, { Instance } from 'react-table'
 import 'react-table/react-table.css'
+import { toast } from 'react-toastify'
 
 type ListPullRequestProps = {
   listPullRequestsStore?: ListPullRequestsStore
@@ -15,6 +18,11 @@ type ListPullRequestProps = {
 export const ListPullRequest = inject('listPullRequestsStore')(
   observer(
     class extends Component<ListPullRequestProps> {
+      state = {
+        clipboardText: ''
+      }
+      textarea: HTMLTextAreaElement | null = null
+      reactTable: Instance<MyPullRequest> | null = null
       render() {
         return (
           <div className="list-pull-requests">
@@ -30,8 +38,54 @@ export const ListPullRequest = inject('listPullRequestsStore')(
             >
               Load Pull Requests
             </button>
+            <button
+              onClick={() => {
+                if (this.reactTable) {
+                  const state = this.reactTable.getResolvedState()
+                  const text =
+                    `index\trepo\tid\tlink\tstate\tuser\ttitle\tupdated\tevaluated\thardnessPoints\ttestPoints\n` +
+                    state.sortedData
+                      .map((data: any) => {
+                        return omit(data, ['_original', '_nestingLevel'])
+                      })
+                      .map((row: any) => {
+                        return [
+                          row._index,
+                          row.repo,
+                          row.id,
+                          row.link,
+                          row.state,
+                          row.user,
+                          row.title,
+                          row.updated,
+                          row.evaluated,
+                          row.hardnessPoints,
+                          row.testPoints
+                        ].join('\t')
+                      })
+                      .join('\n')
+                  this.setState(
+                    {
+                      clipboardText: text
+                    },
+                    () => {
+                      if (this.textarea) {
+                        this.textarea.select()
+                        document.execCommand('copy')
+                        toast.success('Đã copy bảng vào clipboard')
+                      }
+                    }
+                  )
+                }
+              }}
+            >
+              Copy JSON
+            </button>
             <div>
               <ReactTable
+                ref={ref => {
+                  this.reactTable = ref as Instance<MyPullRequest>
+                }}
                 data={this.props.listPullRequestsStore!.pullRequests}
                 filterable
                 defaultFilterMethod={(filter, row) => String(row[filter.id]).includes(filter.value)}
@@ -130,6 +184,13 @@ export const ListPullRequest = inject('listPullRequestsStore')(
                 ]}
                 defaultPageSize={10}
                 className="-striped -highlight"
+              />
+            </div>
+            <div>
+              <textarea
+                readOnly
+                ref={textarea => (this.textarea = textarea)}
+                value={this.state.clipboardText}
               />
             </div>
             {/* <table>

@@ -84,7 +84,7 @@ async function getPullRequests({
   }
 }
 
-type MyPullRequest = {
+export type MyPullRequest = {
   comments: Bitbucket.Schema.Comment[]
   hardnessPoints: number
   testPoints: number

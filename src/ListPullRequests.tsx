@@ -6,6 +6,7 @@ import { format } from 'date-fns'
 import { get } from 'lodash'
 import { MyPullRequest } from './store/list-pull-requests.store'
 import { omit } from 'lodash'
+import DatePicker from 'react-datepicker'
 
 import ReactTable, { Instance } from 'react-table'
 import 'react-table/react-table.css'
@@ -23,9 +24,34 @@ export const ListPullRequest = inject('listPullRequestsStore')(
       }
       textarea: HTMLTextAreaElement | null = null
       reactTable: Instance<MyPullRequest> | null = null
+
       render() {
         return (
           <div className="list-pull-requests">
+            <div>
+              <DatePicker
+                selectsStart
+                selected={this.props.listPullRequestsStore!.startDate}
+                startDate={this.props.listPullRequestsStore!.startDate}
+                endDate={this.props.listPullRequestsStore!.endDate}
+                onChange={data => {
+                  if (data) {
+                    this.props.listPullRequestsStore!.setStartDate(data)
+                  }
+                }}
+              />
+              <DatePicker
+                selectsEnd
+                selected={this.props.listPullRequestsStore!.endDate}
+                startDate={this.props.listPullRequestsStore!.startDate}
+                endDate={this.props.listPullRequestsStore!.endDate}
+                onChange={data => {
+                  if (data) {
+                    this.props.listPullRequestsStore!.setEndDate(data)
+                  }
+                }}
+              />
+            </div>
             <button
               className="button"
               onClick={() => {

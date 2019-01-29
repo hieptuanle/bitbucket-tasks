@@ -8,6 +8,8 @@ import { ListPullRequestsStore } from './store/list-pull-requests.store'
 import { IntlProvider } from 'react-intl'
 import 'react-toastify/dist/ReactToastify.css'
 
+import 'react-datepicker/dist/react-datepicker-cssmodules.css'
+
 ReactDOM.render(
   <Provider listPullRequestsStore={new ListPullRequestsStore()}>
     <IntlProvider locale="en">

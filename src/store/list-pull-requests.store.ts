@@ -23,8 +23,8 @@ async function getPullRequests({
     page: `${page}`,
     repo_slug: repoSlug,
     username: username,
-    sort: '-updated_on',
-    pagelen: 10,
+    sort: '-created_on',
+    pagelen: 50,
     q
   })
 

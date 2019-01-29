@@ -43,7 +43,7 @@ export const ListPullRequest = inject('listPullRequestsStore')(
                 if (this.reactTable) {
                   const state = this.reactTable.getResolvedState()
                   const text =
-                    `index\trepo\tid\tlink\tstate\tuser\ttitle\tupdated\tevaluated\thardnessPoints\ttestPoints\n` +
+                    `index\trepo\tid\tlink\tstate\tuser\ttitle\tcreated\tevaluated\thardnessPoints\ttestPoints\n` +
                     state.sortedData
                       .map((data: any) => {
                         return omit(data, ['_original', '_nestingLevel'])
@@ -57,7 +57,7 @@ export const ListPullRequest = inject('listPullRequestsStore')(
                           row.state,
                           row.user,
                           row.title,
-                          row.updated,
+                          row.created,
                           row.evaluated,
                           row.hardnessPoints,
                           row.testPoints
@@ -79,7 +79,7 @@ export const ListPullRequest = inject('listPullRequestsStore')(
                 }
               }}
             >
-              Copy JSON
+              Copy TSV
             </button>
             <div>
               <ReactTable
@@ -158,10 +158,10 @@ export const ListPullRequest = inject('listPullRequestsStore')(
                     accessor: d => d.title
                   },
                   {
-                    Header: 'Updated',
-                    id: 'updated',
+                    Header: 'Created',
+                    id: 'created',
                     maxWidth: 100,
-                    accessor: d => format(d.updated_on || new Date(), 'YYYY-MM-DD')
+                    accessor: d => format(d.created_on || new Date(), 'YYYY-MM-DD')
                   },
                   {
                     Header: 'Eval',

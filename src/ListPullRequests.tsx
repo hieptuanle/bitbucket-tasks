@@ -75,6 +75,23 @@ export const ListPullRequest = inject('listPullRequestsStore')(
                     }
                   },
                   {
+                    Header: 'State',
+                    id: 'state',
+                    maxWidth: 80,
+                    accessor: d => d.state,
+                    Cell: row => {
+                      return (
+                        <div
+                          style={{
+                            color: row.value === 'MERGED' ? 'limegreen' : 'lightcoral'
+                          }}
+                        >
+                          {row.value}
+                        </div>
+                      )
+                    }
+                  },
+                  {
                     Header: 'User',
                     id: 'user',
                     filterable: true,

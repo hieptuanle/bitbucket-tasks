@@ -23,7 +23,6 @@ async function getPullRequests({
     page: `${page}`,
     repo_slug: repoSlug,
     username: username,
-    state: 'MERGED',
     sort: '-updated_on',
     pagelen: 10,
     q
@@ -31,6 +30,7 @@ async function getPullRequests({
 
   const withCommentsPullRequests = data.values
     ? await bluebird.mapSeries(data.values, async pullRequest => {
+        console.log({ pullRequest })
         let comments: Bitbucket.Schema.Comment[] = []
         let hardnessPoints = 0
         let testPoints = 0
@@ -39,8 +39,10 @@ async function getPullRequests({
           const { data } = await bitbucket.repositories.listPullRequestComments({
             repo_slug: repoSlug,
             username: username,
-            pull_request_id: pullRequest.id
+            pull_request_id: pullRequest.id,
+            pagelen: 50
           })
+
           if (data.values && data.values.length) {
             comments = data.values
             const matchComment = comments.find(comment => {
@@ -89,6 +91,8 @@ type MyPullRequest = {
   evaluated: boolean
 } & Bitbucket.Schema.Pullrequest
 
+const CONDITION =
+  'created_on > 2019-01-01T00:00:00+07:00 AND created_on < 2019-01-29T00:00:00+07:00'
 export class ListPullRequestsStore {
   pullRequests: MyPullRequest[] = []
   async getPullRequests() {
@@ -96,7 +100,7 @@ export class ListPullRequestsStore {
     this.pullRequests = []
     try {
       await getPullRequests({
-        q: 'created_on > 2019-01-01T00:00:00+07:00',
+        q: CONDITION,
         pullRequests: this.pullRequests,
         onData: this.appendPullRequests,
         username: '4handy',
@@ -104,7 +108,7 @@ export class ListPullRequestsStore {
       })
 
       await getPullRequests({
-        q: 'created_on > 2019-01-01T00:00:00+07:00',
+        q: CONDITION,
         pullRequests: this.pullRequests,
         onData: this.appendPullRequests,
         username: '4handy',
@@ -112,7 +116,7 @@ export class ListPullRequestsStore {
       })
 
       await getPullRequests({
-        q: 'created_on > 2019-01-01T00:00:00+07:00',
+        q: CONDITION,
         pullRequests: this.pullRequests,
         onData: this.appendPullRequests,
         username: '4handy',
@@ -120,7 +124,7 @@ export class ListPullRequestsStore {
       })
 
       await getPullRequests({
-        q: 'created_on > 2019-01-01T00:00:00+07:00',
+        q: CONDITION,
         pullRequests: this.pullRequests,
         onData: this.appendPullRequests,
         username: '4handy',
@@ -128,7 +132,7 @@ export class ListPullRequestsStore {
       })
 
       await getPullRequests({
-        q: 'created_on > 2019-01-01T00:00:00+07:00',
+        q: CONDITION,
         pullRequests: this.pullRequests,
         onData: this.appendPullRequests,
         username: '4handy',
@@ -136,7 +140,7 @@ export class ListPullRequestsStore {
       })
 
       await getPullRequests({
-        q: 'created_on > 2019-01-01T00:00:00+07:00',
+        q: CONDITION,
         pullRequests: this.pullRequests,
         onData: this.appendPullRequests,
         username: '4handy',

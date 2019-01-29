@@ -11,7 +11,8 @@ async function getPullRequests({
   username,
   repoSlug,
   pullRequests,
-  onData
+  onData,
+  loadComments
 }: {
   page?: number
   username: string
@@ -19,6 +20,7 @@ async function getPullRequests({
   q: string
   pullRequests: MyPullRequest[]
   onData?: (pullRequests: MyPullRequest[]) => void
+  loadComments: boolean
 }) {
   const { data, headers } = await bitbucket.repositories.listPullRequests({
     page: `${page}`,
@@ -36,7 +38,13 @@ async function getPullRequests({
         let hardnessPoints = 0
         let testPoints = 0
         let evaluated = false
-        if (pullRequest.comment_count && pullRequest.comment_count > 0 && pullRequest.id) {
+
+        if (
+          loadComments &&
+          pullRequest.comment_count &&
+          pullRequest.comment_count > 0 &&
+          pullRequest.id
+        ) {
           const { data } = await bitbucket.repositories.listPullRequestComments({
             repo_slug: repoSlug,
             username: username,
@@ -64,6 +72,7 @@ async function getPullRequests({
             }
           }
         }
+
         return {
           hardnessPoints,
           testPoints,
@@ -81,7 +90,15 @@ async function getPullRequests({
   console.log(data)
 
   if (data.next) {
-    await getPullRequests({ page: page + 1, q, pullRequests, onData, username, repoSlug })
+    await getPullRequests({
+      page: page + 1,
+      q,
+      pullRequests,
+      onData,
+      username,
+      repoSlug,
+      loadComments
+    })
   }
 }
 
@@ -100,6 +117,7 @@ const CONDITION =
   'created_on > 2019-01-01T00:00:00+07:00 AND created_on < 2019-01-29T00:00:00+07:00'
 export class ListPullRequestsStore {
   pullRequests: MyPullRequest[] = []
+  loadComments: boolean = true
   startDate?: Date = startOfMonth(new Date())
   endDate?: Date = endOfMonth(new Date())
   get condition() {
@@ -122,7 +140,8 @@ export class ListPullRequestsStore {
         pullRequests: this.pullRequests,
         onData: this.appendPullRequests,
         username: '4handy',
-        repoSlug: '4handy-work-2'
+        repoSlug: '4handy-work-2',
+        loadComments: this.loadComments
       })
 
       await getPullRequests({
@@ -130,7 +149,8 @@ export class ListPullRequestsStore {
         pullRequests: this.pullRequests,
         onData: this.appendPullRequests,
         username: '4handy',
-        repoSlug: 'savor-pos-mobile'
+        repoSlug: 'savor-pos-mobile',
+        loadComments: this.loadComments
       })
 
       await getPullRequests({
@@ -138,7 +158,8 @@ export class ListPullRequestsStore {
         pullRequests: this.pullRequests,
         onData: this.appendPullRequests,
         username: '4handy',
-        repoSlug: 'savor-server'
+        repoSlug: 'savor-server',
+        loadComments: this.loadComments
       })
 
       await getPullRequests({
@@ -146,7 +167,8 @@ export class ListPullRequestsStore {
         pullRequests: this.pullRequests,
         onData: this.appendPullRequests,
         username: '4handy',
-        repoSlug: 'savor-pos'
+        repoSlug: 'savor-pos',
+        loadComments: this.loadComments
       })
 
       await getPullRequests({
@@ -154,7 +176,8 @@ export class ListPullRequestsStore {
         pullRequests: this.pullRequests,
         onData: this.appendPullRequests,
         username: '4handy',
-        repoSlug: 'savor-tab'
+        repoSlug: 'savor-tab',
+        loadComments: this.loadComments
       })
 
       await getPullRequests({
@@ -162,7 +185,8 @@ export class ListPullRequestsStore {
         pullRequests: this.pullRequests,
         onData: this.appendPullRequests,
         username: '4handy',
-        repoSlug: 'super-savor-web'
+        repoSlug: 'super-savor-web',
+        loadComments: this.loadComments
       })
     } catch (e) {
       throw e
@@ -179,15 +203,20 @@ export class ListPullRequestsStore {
   setEndDate(date: Date) {
     this.endDate = date
   }
+  toggleLoadComments() {
+    this.loadComments = !this.loadComments
+  }
 }
 
 decorate(ListPullRequestsStore, {
   pullRequests: observable,
+  loadComments: observable,
   startDate: observable,
   endDate: observable,
   condition: computed,
   setStartDate: action,
   setEndDate: action,
   getPullRequests: action,
-  appendPullRequests: action
+  appendPullRequests: action,
+  toggleLoadComments: action
 })

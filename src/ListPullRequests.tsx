@@ -52,6 +52,18 @@ export const ListPullRequest = inject('listPullRequestsStore')(
                 }}
               />
             </div>
+            <div>
+              <label>
+                <input
+                  type="checkbox"
+                  checked={this.props.listPullRequestsStore!.loadComments}
+                  onChange={e => {
+                    this.props.listPullRequestsStore!.toggleLoadComments()
+                  }}
+                />
+                Load comments
+              </label>
+            </div>
             <button
               className="button"
               onClick={() => {
